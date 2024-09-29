@@ -1,0 +1,30 @@
+mode: rule
+mixed-port: 7890
+log-level: debug
+allow-lan: true
+external-controller: ':9898'
+rules:
+  - DOMAIN-SUFFIX,baidubce.com,AutoTest
+  - MATCH,DIRECT
+auto: &auto
+  type: url-test
+  lazy: false
+  url: http://www.gstatic.com/generate_204
+  interval: 900
+  use: [Subscribe]
+proxy-groups:
+  - name: AutoTest
+    <<: *auto
+    filter: "港|HK|hk|(?i)Hong"
+
+# 代理订阅链接
+proxy-providers:
+  Subscribe:
+    type: http
+    url: ""
+    interval: 3600
+    path: ./subscriptions/subscribe.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
